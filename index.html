@@ -311,6 +311,21 @@ function NewBadge(props){
   return <Chip bg="#FEF5E7" tx="#9A6800" size={props.size||9}>NEW</Chip>;
 }
 
+// Build a PSI overview URL from an initiative's ID and name.
+// Pattern: .../initiatives/{id-with-dashes}-{slugified-name}
+// Example: id "2.5.7" + name "CDR Release v9" → "2-5-7-cdr-release-v9"
+function buildPsiUrl(init){
+  var idPart = String(init.id || "").replace(/\./g, "-");
+  var namePart = String(init.name || "")
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, " ")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  var slug = namePart ? (idPart + "-" + namePart) : idPart;
+  return "https://sites.google.com/nih.gov/aou-project-status-inventory/psi-home/initiatives/" + slug;
+}
+
 // Download a DOM element as a PNG image. Uses html2canvas which is loaded via CDN above.
 function downloadElementAsPng(elementId, filename){
   var el = document.getElementById(elementId);
@@ -468,7 +483,7 @@ function DrillPanel(props){
             <span style={{color:"#999"}}>New Q3 '26 rank</span><span>{init.q3Rank != null ? "#"+init.q3Rank : <span style={{color:"#bbb"}}>not yet ranked</span>}</span>
           </div>
         </div>
-        <a href={"https://sites.google.com/nih.gov/aou-project-status-inventory/psi-home/initiatives/"+init.id.replace(/\./g,"-")} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:11.5,color:"#2471A3",textDecoration:"none",padding:"6px 12px",border:"1px solid #C8DCF0",borderRadius:6,background:"#EBF5FB",fontWeight:500}}>View in PSI ↗</a>
+        <a href={buildPsiUrl(init)} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:11.5,color:"#2471A3",textDecoration:"none",padding:"6px 12px",border:"1px solid #C8DCF0",borderRadius:6,background:"#EBF5FB",fontWeight:500}}>View in PSI ↗</a>
       </div>
     </div>
   );
@@ -801,7 +816,11 @@ function MainView(props){
     <div style={{padding:"20px 28px 32px"}}>
 
       {/* === Combined top row: snapshot + change tiles side-by-side === */}
-      <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap",alignItems:"stretch"}}>
+      <section id="qpe-section-summary" style={{position:"relative"}}>
+        <div style={{position:"absolute",top:-4,right:0,zIndex:2}}>
+          <SectionDownloadButton targetId="qpe-section-summary" name="summary"/>
+        </div>
+        <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap",alignItems:"stretch"}}>
 
         {/* Snapshot block */}
         <div className="card" style={{padding:"10px 14px 12px",display:"flex",flexDirection:"column",gap:6,minWidth:280,flex:"1 1 320px"}}>
@@ -895,14 +914,16 @@ function MainView(props){
           </div>
         </div>
       </div>
+      </section>
 
       {/* === Section 3: CEO / Top-ranked === */}
       {top3.length > 0 && (
-        <div style={{marginBottom:24}}>
+        <section id="qpe-section-topranked" style={{marginBottom:24}}>
           <div className="section-h" style={{color:"#9A6800"}}>
             <span>★ Top-ranked for {displayQuarter}</span>
             <span className="rule" style={{background:"#F4D03F"}}/>
             <span style={{fontSize:10,color:"#aaa",letterSpacing:0,fontWeight:400,textTransform:"none"}}>(Goal Owner Ranking)</span>
+            <SectionDownloadButton targetId="qpe-section-topranked" name="top-ranked"/>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",gap:12}}>
             {top3.map(function(t){
@@ -926,30 +947,32 @@ function MainView(props){
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
       {/* === Section 4: New proposals (now 2-column card grid) === */}
       {newOnes.length > 0 && (
-        <div style={{marginBottom:24}}>
+        <section id="qpe-section-newproposed" style={{marginBottom:24}}>
           <div className="section-h" style={{color:"#9A6800"}}>
             <span>📥 New Proposed Initiatives This Cycle</span>
             <span className="rule" style={{background:"#F4D03F"}}/>
             <span style={{fontSize:10,color:"#aaa",letterSpacing:0,fontWeight:400,textTransform:"none"}}>({newOnes.length})</span>
+            <SectionDownloadButton targetId="qpe-section-newproposed" name="new-proposed"/>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(320px, 1fr))",gap:10}}>
             {newOnes.map(function(n){
               return <InitCard key={n.id} init={n} onDrill={onDrill}/>;
             })}
           </div>
-        </div>
+        </section>
       )}
 
       {/* === Section 5: Goal lanes — Initiatives by Goal, fixed 3x2 grid === */}
-      <div style={{marginBottom:24}}>
+      <section id="qpe-section-goallanes" style={{marginBottom:24}}>
         <div className="section-h">
           <span>Initiatives by Goal — {displayQuarter}</span>
           <span className="rule"/>
+          <SectionDownloadButton targetId="qpe-section-goallanes" name="by-goal"/>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, minmax(0, 1fr))",gap:12}}>
           {Object.keys(GOALS).filter(function(k){return goalFocus === "all" || goalFocus === k;}).map(function(k){
@@ -982,7 +1005,7 @@ function MainView(props){
             );
           })}
         </div>
-      </div>
+      </section>
 
     </div>
   );
