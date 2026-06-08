@@ -1046,7 +1046,6 @@ function MainView(props){
                     {lane.map(function(i){
                       return (
                         <div key={i.id} className="row-hover" onClick={function(){onDrill(i.id);}} style={{padding:"6px 8px",margin:"0 -8px",borderRadius:5,cursor:"pointer",display:"flex",alignItems:"center",gap:6,minWidth:0}}>
-                          {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,minWidth:22,flexShrink:0}}>#{i.q3Rank}</span>}
                           <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa",flexShrink:0}}>{i.id}</span>
                           <span style={{fontSize:12,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name}</span>
                           {i.isNew && <NewBadge size={8.5}/>}
