@@ -829,9 +829,11 @@ function MainView(props){
   // + ongoing should equal Q2 Committed total; adding new gives the current candidate total.
   var cycleStory = useMemo(function(){
     var lastCommittedIds = {};
+    var lastBackloggedIds = {};
     initiatives.forEach(function(i){
       var q2H = i.history.find(function(h){return h.quarter === "Q2 2026";});
       if(q2H && q2H.status === "Committed") lastCommittedIds[i.id] = true;
+      if(q2H && q2H.status === "Backlogged") lastBackloggedIds[i.id] = true;
     });
     var lastCommitted = Object.keys(lastCommittedIds);
 
@@ -842,11 +844,14 @@ function MainView(props){
       return lastCommittedIds[i.id] && i.status === "Backlogged";
     });
     var ongoing = initiatives.filter(function(i){
-      // Was committed last quarter and is now proposed (re-ratification) or still committed
       return lastCommittedIds[i.id] && (i.status === "Proposed" || i.status === "Committed") && !i.isNew;
     });
     var newProposed = initiatives.filter(function(i){
       return i.isNew && i.status === "Proposed";
+    });
+    // Revived: was Backlogged last cycle, now Proposed or Committed this cycle
+    var revived = initiatives.filter(function(i){
+      return lastBackloggedIds[i.id] && (i.status === "Proposed" || i.status === "Committed");
     });
 
     return {
@@ -855,6 +860,7 @@ function MainView(props){
       backlogged: backlogged,
       ongoing: ongoing,
       newProposed: newProposed,
+      revived: revived,
     };
   },[initiatives]);
 
@@ -880,13 +886,13 @@ function MainView(props){
         <div className="card" style={{padding:"10px 14px 12px",display:"flex",flexDirection:"column",gap:6,minWidth:280,flex:"1 1 320px"}}>
           <div className="card-hover" onClick={function(){props.onListDrill({
             label:"In "+displayQuarter+" planning",
-            items: cycleStory.ongoing.concat(cycleStory.newProposed),
-            sublabel: cycleStory.ongoing.length+" ongoing + "+cycleStory.newProposed.length+" new",
+            items: cycleStory.ongoing.concat(cycleStory.newProposed).concat(cycleStory.revived),
+            sublabel: cycleStory.ongoing.length+" ongoing + "+cycleStory.newProposed.length+" new"+(cycleStory.revived.length ? " + "+cycleStory.revived.length+" revived" : ""),
             accent:"#666",
           });}} style={{cursor:"pointer",margin:"-4px -6px",padding:"4px 6px",borderRadius:5}}>
             <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600}}>In {displayQuarter} planning</div>
-            <div style={{fontSize:22,fontWeight:700,lineHeight:1.1,marginTop:2}}>{cycleStory.ongoing.length + cycleStory.newProposed.length}</div>
-            <div style={{fontSize:10,color:"#aaa",marginTop:1}}>{cycleStory.ongoing.length} ongoing + {cycleStory.newProposed.length} new</div>
+            <div style={{fontSize:22,fontWeight:700,lineHeight:1.1,marginTop:2}}>{cycleStory.ongoing.length + cycleStory.newProposed.length + cycleStory.revived.length}</div>
+            <div style={{fontSize:10,color:"#aaa",marginTop:1}}>{cycleStory.ongoing.length} ongoing + {cycleStory.newProposed.length} new{cycleStory.revived.length ? " + "+cycleStory.revived.length+" revived" : ""}</div>
           </div>
           <div style={{marginTop:2}}>
             <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:.4,color:"#aaa",fontWeight:600,marginBottom:3,display:"flex",justifyContent:"space-between"}}>
@@ -905,6 +911,7 @@ function MainView(props){
               {[
                 {k:"Ongoing",    n:cycleStory.ongoing.length,    color:STATUS_CFG.Proposed.dot},
                 {k:"New",        n:cycleStory.newProposed.length,color:"#F4D03F"},
+                {k:"Revived",    n:cycleStory.revived.length,    color:"#6C3483"},
               ].map(function(seg){
                 if(seg.n === 0) return null;
                 return <div key={seg.k} style={{flexGrow:seg.n,background:seg.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9.5,color:"#fff",fontWeight:600}}>{seg.n}</div>;
@@ -916,6 +923,7 @@ function MainView(props){
                 {k:"Backlogged", n:cycleStory.backlogged.length, color:STATUS_CFG.Backlogged.dot},
                 {k:"Ongoing",    n:cycleStory.ongoing.length,    color:STATUS_CFG.Proposed.dot},
                 {k:"New",        n:cycleStory.newProposed.length,color:"#F4D03F"},
+                {k:"Revived",    n:cycleStory.revived.length,    color:"#6C3483"},
               ].map(function(seg){
                 if(seg.n === 0) return null;
                 return <span key={seg.k} style={{display:"inline-flex",alignItems:"center",gap:3}}><span style={{width:7,height:7,borderRadius:2,background:seg.color}}/>{seg.k}</span>;
@@ -965,6 +973,16 @@ function MainView(props){
             <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:.4,color:"#9A6800",fontWeight:600}}>+ New Proposed</div>
             <div style={{fontSize:18,fontWeight:700,color:"#9A6800",lineHeight:1.1}}>{cycleStory.newProposed.length}</div>
             <div style={{fontSize:9.5,color:"#9A6800"}}>added this cycle</div>
+          </div>
+          <div className="card card-hover" onClick={function(){props.onListDrill({
+            label:"↻ Revived from Backlog",
+            items: cycleStory.revived,
+            sublabel:"pulled back to active",
+            accent:"#6C3483",
+          });}} style={{padding:"8px 12px",flex:"1 1 120px",display:"flex",flexDirection:"column",gap:1,justifyContent:"center",cursor:"pointer"}}>
+            <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:.4,color:"#999",fontWeight:600}}>↻ Revived</div>
+            <div style={{fontSize:18,fontWeight:700,color:"#6C3483",lineHeight:1.1}}>{cycleStory.revived.length}</div>
+            <div style={{fontSize:9.5,color:"#aaa"}}>from backlog</div>
           </div>
         </div>
       </div>
