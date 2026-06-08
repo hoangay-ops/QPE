@@ -463,7 +463,7 @@ function DrillPanel(props){
   if(!init) return null;
   var g = GOALS[init.goal];
   return (
-    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:1000,display:"flex",flexDirection:"column"}}>
+    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:1100,display:"flex",flexDirection:"column"}}>
       <div style={{padding:"16px 20px",borderBottom:"1px solid #ececec",background:"#fafbfc",flexShrink:0}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:8}}>
           <div style={{flex:1,minWidth:0}}>
@@ -772,6 +772,7 @@ function InitCardSlim(props){
 // ─── Main unified page ───────────────────────────────────────────────────────
 function MainView(props){
   var initiatives = props.initiatives, onDrill = props.onDrill, onGoalDrill = props.onGoalDrill, goalFocus = props.goalFocus;
+  var goalsRef = props.goalsRef || {};
   var displayQuarter = "Q3 2026";
 
   var ranked = initiatives.filter(function(i){return i.q3Rank != null;}).sort(function(a,b){return a.q3Rank - b.q3Rank;});
@@ -1028,24 +1029,29 @@ function MainView(props){
           {Object.keys(GOALS).filter(function(k){return goalFocus === "all" || goalFocus === k;}).map(function(k){
             var g = GOALS[k];
             var lane = goalLanes[k];
+            var goalOwner = goalsRef[k] && goalsRef[k].owner;
             return (
               <div key={k} className="card" style={{padding:"12px 14px"}}>
                 <div onClick={function(){onGoalDrill(k);}} style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:8,gap:6,borderBottom:"2px solid "+g.color+"33",paddingBottom:6,cursor:"pointer"}} title="Click to see goal details, objectives, and owners">
-                  <span style={{fontSize:13,fontWeight:700,color:g.color}}>Goal {g.num}: {g.name}</span>
-                  <span style={{fontSize:10.5,color:"#999"}}>{lane.length}</span>
+                  <div style={{display:"flex",alignItems:"baseline",gap:8,minWidth:0,flex:1}}>
+                    <span style={{fontSize:13,fontWeight:700,color:g.color,whiteSpace:"nowrap"}}>Goal {g.num}: {g.name}</span>
+                    {goalOwner && <span style={{fontSize:10.5,color:"#999",fontWeight:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>· {goalOwner}</span>}
+                  </div>
+                  <span style={{fontSize:10.5,color:"#999",flexShrink:0}}>{lane.length}</span>
                 </div>
                 {lane.length === 0 ? (
                   <div style={{fontSize:11,color:"#bbb",fontStyle:"italic",padding:"6px 0"}}>None in this quarter.</div>
                 ) : (
                   <div style={{display:"flex",flexDirection:"column",gap:3}}>
                     {lane.map(function(i){
-                      var sc = STATUS_CFG[i.status];
                       return (
-                        <div key={i.id} className="row-hover" onClick={function(){onDrill(i.id);}} style={{padding:"6px 8px",margin:"0 -8px",borderRadius:5,cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
-                          <span style={{width:7,height:7,borderRadius:"50%",background:sc?sc.dot:"#ccc",flexShrink:0}}/>
-                          {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,minWidth:22}}>#{i.q3Rank}</span>}
-                          <span style={{fontSize:12,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{i.name}</span>
+                        <div key={i.id} className="row-hover" onClick={function(){onDrill(i.id);}} style={{padding:"6px 8px",margin:"0 -8px",borderRadius:5,cursor:"pointer",display:"flex",alignItems:"center",gap:6,minWidth:0}}>
+                          {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,minWidth:22,flexShrink:0}}>#{i.q3Rank}</span>}
+                          <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa",flexShrink:0}}>{i.id}</span>
+                          <span style={{fontSize:12,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name}</span>
                           {i.isNew && <NewBadge size={8.5}/>}
+                          {i.status === "Backlogged" && <Chip bg={STATUS_CFG.Backlogged.bg} tx={STATUS_CFG.Backlogged.tx} size={8.5}>Backlogged</Chip>}
+                          {i.status === "Complete" && <Chip bg={STATUS_CFG.Complete.bg} tx={STATUS_CFG.Complete.tx} size={8.5}>Completed</Chip>}
                         </div>
                       );
                     })}
@@ -1212,7 +1218,7 @@ function App(){
           </div>
         )}
         {loadState === "live" && (
-          <MainView initiatives={filtered} onDrill={setDrill} onGoalDrill={setGoalDrill} onListDrill={setListDrill} goalFocus={goalFocus}/>
+          <MainView initiatives={filtered} onDrill={setDrill} onGoalDrill={setGoalDrill} onListDrill={setListDrill} goalFocus={goalFocus} goalsRef={goalsRef}/>
         )}
       </div>
 
