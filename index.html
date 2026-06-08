@@ -463,7 +463,7 @@ function DrillPanel(props){
   if(!init) return null;
   var g = GOALS[init.goal];
   return (
-    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:1100,display:"flex",flexDirection:"column"}}>
+    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:props.zIndex || 1000,display:"flex",flexDirection:"column"}}>
       <div style={{padding:"16px 20px",borderBottom:"1px solid #ececec",background:"#fafbfc",flexShrink:0}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:8}}>
           <div style={{flex:1,minWidth:0}}>
@@ -615,7 +615,7 @@ function GoalPanel(props){
   });
 
   return (
-    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:1000,display:"flex",flexDirection:"column"}}>
+    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:props.zIndex || 1000,display:"flex",flexDirection:"column"}}>
       <div style={{padding:"16px 20px",borderBottom:"1px solid #ececec",background:"#fafbfc",flexShrink:0,borderTop:"4px solid "+g.color}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,marginBottom:8}}>
           <div style={{flex:1,minWidth:0}}>
@@ -680,7 +680,7 @@ function ListPanel(props){
   if(!props.list) return null;
   var list = props.list;
   return (
-    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:1000,display:"flex",flexDirection:"column"}}>
+    <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:props.zIndex || 1000,display:"flex",flexDirection:"column"}}>
       <div style={{padding:"16px 20px",borderBottom:"1px solid #ececec",background:"#fafbfc",flexShrink:0}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
           <div style={{flex:1,minWidth:0}}>
@@ -1046,8 +1046,7 @@ function MainView(props){
                     {lane.map(function(i){
                       return (
                         <div key={i.id} className="row-hover" onClick={function(){onDrill(i.id);}} style={{padding:"6px 8px",margin:"0 -8px",borderRadius:5,cursor:"pointer",display:"flex",alignItems:"center",gap:6,minWidth:0}}>
-                          <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa",flexShrink:0}}>{i.id}</span>
-                          <span style={{fontSize:12,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name}</span>
+                          <span style={{fontSize:12,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name} <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa",fontWeight:400}}>{i.id}</span></span>
                           {i.isNew && <NewBadge size={8.5}/>}
                           {i.status === "Backlogged" && <Chip bg={STATUS_CFG.Backlogged.bg} tx={STATUS_CFG.Backlogged.tx} size={8.5}>Backlogged</Chip>}
                           {i.status === "Complete" && <Chip bg={STATUS_CFG.Complete.bg} tx={STATUS_CFG.Complete.tx} size={8.5}>Completed</Chip>}
@@ -1073,9 +1072,15 @@ function App(){
   var fo = useState([]); var fOwner = fo[0], setFOwner = fo[1];
   var no = useState(false); var newOnly = no[0], setNewOnly = no[1];
   var sr = useState(""); var search = sr[0], setSearch = sr[1];
-  var dr = useState(null); var drill = dr[0], setDrill = dr[1];
-  var gd = useState(null); var goalDrill = gd[0], setGoalDrill = gd[1];
-  var ld = useState(null); var listDrill = ld[0], setListDrill = ld[1];
+  var dr = useState(null); var drill = dr[0], setDrillRaw = dr[1];
+  var gd = useState(null); var goalDrill = gd[0], setGoalDrillRaw = gd[1];
+  var ld = useState(null); var listDrill = ld[0], setListDrillRaw = ld[1];
+  // Track which panel was opened most recently so we can stack z-index correctly
+  var lp = useState(null); var lastPanel = lp[0], setLastPanel = lp[1];
+
+  function setDrill(v){ setDrillRaw(v); if(v) setLastPanel("drill"); }
+  function setGoalDrill(v){ setGoalDrillRaw(v); if(v) setLastPanel("goal"); }
+  function setListDrill(v){ setListDrillRaw(v); if(v) setLastPanel("list"); }
 
   // Presentation mode: ?present=1 hides chrome and bumps font sizes for projection / screenshots
   var presentMode = useMemo(function(){
@@ -1221,9 +1226,9 @@ function App(){
         )}
       </div>
 
-      {drillInit && <DrillPanel init={drillInit} onClose={function(){setDrill(null);}}/>}
-      {goalDrill && <GoalPanel goalKey={goalDrill} allInitiatives={initiatives} goalsRef={goalsRef} onClose={function(){setGoalDrill(null);}}/>}
-      {listDrill && <ListPanel list={listDrill} label={listDrill.label} sublabel={listDrill.sublabel} accent={listDrill.accent} onItemDrill={function(id){setListDrill(null);setDrill(id);}} onClose={function(){setListDrill(null);}}/>}
+      {drillInit && <DrillPanel init={drillInit} zIndex={lastPanel === "drill" ? 1100 : 1000} onClose={function(){setDrillRaw(null);}}/>}
+      {goalDrill && <GoalPanel goalKey={goalDrill} allInitiatives={initiatives} goalsRef={goalsRef} zIndex={lastPanel === "goal" ? 1100 : 1000} onClose={function(){setGoalDrillRaw(null);}}/>}
+      {listDrill && <ListPanel list={listDrill} label={listDrill.label} sublabel={listDrill.sublabel} accent={listDrill.accent} zIndex={lastPanel === "list" ? 1100 : 1000} onItemDrill={function(id){setListDrillRaw(null);setDrill(id);}} onClose={function(){setListDrillRaw(null);}}/>}
     </div>
   );
 }
