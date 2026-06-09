@@ -50,6 +50,7 @@ const QUARTERS_HIST = ["Q4 2025","Q2 2026","Q3 2026"];
 // ─── Live CSV loader ─────────────────────────────────────────────────────────
 const LIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3uNKjiErriTzB7r258GdfQdeXVhzjbfG4VZr5J0u9ZMj9punGsNHbnzeaGyuiC3-VT1cUHAqrOSXI/pub?gid=0&single=true&output=csv";
 const GOALS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3uNKjiErriTzB7r258GdfQdeXVhzjbfG4VZr5J0u9ZMj9punGsNHbnzeaGyuiC3-VT1cUHAqrOSXI/pub?gid=1157686184&single=true&output=csv";
+const CAPACITY_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBMoz4Ih_0AkKsm0qr1xfM4tkppaQqFJVWJ8IE6tmSO99MmxUOW8scahb2ljMapz_lPO_4Q_EaKDR8/pub?gid=910516878&single=true&output=csv";
 
 function addCacheBuster(url){
   return url + (url.indexOf("?") === -1 ? "?" : "&") + "_=" + Date.now();
@@ -255,7 +256,63 @@ function normalizeGoalsData(csvText){
   return map;
 }
 
-// ─── Error Boundary ──────────────────────────────────────────────────────────
+// Parse the Capacity Calculations tab.
+// Returns: { "1.3.18": { confidenceFactor, confidenceLabel, ciNum, performers,
+//            committed, possiblyXS, possiblyS, possiblyM, possiblyL, possiblyXL,
+//            noCapacity, notPerforming }, ... }
+function normalizeCapacityData(csvText){
+  var rows = parseCSV(csvText);
+  if(rows.length === 0) throw new Error("Capacity CSV is empty");
+
+  // Find the header row — first row where col 0 normalizes to "id"
+  var headerIdx = 0;
+  for(var i = 0; i < Math.min(6, rows.length); i++){
+    if(rows[i][0] && normHeader(rows[i][0]) === "id"){ headerIdx = i; break; }
+  }
+  var header = rows[headerIdx];
+  var body   = rows.slice(headerIdx + 1);
+  var get    = makeRowAccessor(header);
+
+  // The Confidence Index label is in col C (index 2) — not a named header, grab by position
+  var map = {};
+  body.forEach(function(row){
+    var id = get(row, "ID");
+    // Only keep rows with a valid dotted initiative ID format
+    if(!id || !/^\d+\.\d+/.test(id)) return;
+
+    // Confidence Factor: exported as "90%" or "0.9" — normalise to 0-1 float
+    var cfRaw = get(row, "Confidence Factor");
+    var cf = 0;
+    if(cfRaw.indexOf("%") !== -1){ cf = parseFloat(cfRaw) / 100; }
+    else { cf = parseFloat(cfRaw) || 0; }
+    if(isNaN(cf)) cf = 0;
+
+    // Confidence Index label lives in col index 2 (column C in the sheet)
+    var ciLabel = String(row[2] || "").trim(); // e.g. "Confidence Index: 9"
+    var ciMatch = ciLabel.match(/(\d+)/);
+    var ciNum   = ciMatch ? parseInt(ciMatch[1], 10) : null;
+
+    function int(key){ return parseInt(get(row, key)) || 0; }
+
+    map[id] = {
+      confidenceFactor: cf,
+      confidenceLabel:  ciLabel,
+      ciNum:            ciNum,
+      performers:       int("Performers"),
+      committed:        int("Committed"),
+      possiblyXS:       int("Possibly - XS"),
+      possiblyS:        int("Possibly - S"),
+      possiblyM:        int("Possibly - M"),
+      possiblyL:        int("Possibly - L"),
+      possiblyXL:       int("Possibly - XL"),
+      noCapacity:       int("No Capacity Remaining"),
+      notPerforming:    int("Not Performing"),
+    };
+  });
+
+  if(Object.keys(map).length === 0) throw new Error("No capacity rows found — check tab gid");
+  return map;
+}
 function ErrorBoundaryClass(props){
   React.Component.call(this, props);
   this.state = {err: null};
@@ -460,8 +517,24 @@ function MultiSelect(props){
 // ─── Drill Panel ─────────────────────────────────────────────────────────────
 function DrillPanel(props){
   var init = props.init;
+  var capRef = props.capRef || {};
   if(!init) return null;
   var g = GOALS[init.goal];
+  var cap = capRef[init.id] || null;
+
+  // Derive confidence colour from CI number
+  function ciColor(n){
+    if(n == null) return "#999";
+    if(n >= 9) return "#1E8449";
+    if(n >= 7) return "#B7950B";
+    if(n >= 5) return "#D35400";
+    return "#C0392B";
+  }
+
+  // Summarise "possibly" count — all possibly-* buckets combined
+  var possiblyTotal = cap ? cap.possiblyXS + cap.possiblyS + cap.possiblyM + cap.possiblyL + cap.possiblyXL : 0;
+  // LOE label for dominant possibly bucket (for tooltips, future use)
+
   return (
     <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:props.zIndex || 1000,display:"flex",flexDirection:"column"}}>
       <div style={{padding:"16px 20px",borderBottom:"1px solid #ececec",background:"#fafbfc",flexShrink:0}}>
@@ -518,6 +591,75 @@ function DrillPanel(props){
             })}
           </div>
         </div>
+        {/* Capacity signal — from calculations tab */}
+        {cap ? (
+          <div style={{marginBottom:12,padding:"10px 12px",borderRadius:6,background:"#fff",border:"1px solid #ececec"}}>
+            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:8}}>Capacity signal — Q3 2026</div>
+
+            {/* Confidence bar */}
+            <div style={{marginBottom:8}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                <span style={{fontSize:11.5,fontWeight:700,color:ciColor(cap.ciNum)}}>{cap.confidenceLabel || "—"}</span>
+                <span style={{fontSize:11,color:"#999"}}>{cap.performers} performer{cap.performers !== 1 ? "s" : ""}</span>
+              </div>
+              <div style={{height:7,borderRadius:4,background:"#f0f0f0",overflow:"hidden"}}>
+                <div style={{height:"100%",width:(Math.round(cap.confidenceFactor * 100)) + "%",background:ciColor(cap.ciNum),borderRadius:4,transition:"width .3s"}}/>
+              </div>
+              <div style={{fontSize:9.5,color:"#aaa",marginTop:3,textAlign:"right"}}>{Math.round(cap.confidenceFactor * 100)}%</div>
+            </div>
+
+            {/* Staffing breakdown */}
+            <div style={{display:"grid",gridTemplateColumns:"auto 1fr auto",gap:"4px 10px",fontSize:11.5,alignItems:"center"}}>
+              {cap.committed > 0 && (
+                <>
+                  <span style={{color:"#1E8449",fontWeight:600}}>✓</span>
+                  <span style={{color:"#555"}}>Definitely committed</span>
+                  <span style={{fontWeight:600,color:"#1E8449",textAlign:"right"}}>{cap.committed}</span>
+                </>
+              )}
+              {possiblyTotal > 0 && (
+                <>
+                  <span style={{color:"#B7950B",fontWeight:600}}>~</span>
+                  <span style={{color:"#555"}}>
+                    Possibly
+                    {/* Show size breakdown inline if mixed */}
+                    {" "}
+                    <span style={{fontSize:10,color:"#aaa"}}>
+                      {[
+                        cap.possiblyXS > 0 ? cap.possiblyXS+"×XS" : null,
+                        cap.possiblyS  > 0 ? cap.possiblyS +"×S"  : null,
+                        cap.possiblyM  > 0 ? cap.possiblyM +"×M"  : null,
+                        cap.possiblyL  > 0 ? cap.possiblyL +"×L"  : null,
+                        cap.possiblyXL > 0 ? cap.possiblyXL+"×XL" : null,
+                      ].filter(Boolean).join(" · ")}
+                    </span>
+                  </span>
+                  <span style={{fontWeight:600,color:"#B7950B",textAlign:"right"}}>{possiblyTotal}</span>
+                </>
+              )}
+              {cap.noCapacity > 0 && (
+                <>
+                  <span style={{color:"#C0392B",fontWeight:600}}>✗</span>
+                  <span style={{color:"#555"}}>No capacity remaining</span>
+                  <span style={{fontWeight:600,color:"#C0392B",textAlign:"right"}}>{cap.noCapacity}</span>
+                </>
+              )}
+              {cap.notPerforming > 0 && (
+                <>
+                  <span style={{color:"#ccc"}}>–</span>
+                  <span style={{color:"#aaa"}}>Not performing</span>
+                  <span style={{color:"#aaa",textAlign:"right"}}>{cap.notPerforming}</span>
+                </>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div style={{marginBottom:12,padding:"10px 12px",borderRadius:6,background:"#fafbfc",border:"1px solid #ececec"}}>
+            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:4}}>Capacity signal — Q3 2026</div>
+            <div style={{fontSize:11.5,color:"#bbb",fontStyle:"italic"}}>No capacity data for this initiative yet.</div>
+          </div>
+        )}
+
         {init.shortDesc && (
           <div style={{marginBottom:12,padding:"10px 12px",borderRadius:6,background:"#fff",border:"1px solid #ececec"}}>
             <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:6}}>Summary</div>
@@ -873,11 +1015,19 @@ function MainView(props){
   var goalLanes = {};
   Object.keys(GOALS).forEach(function(k){ goalLanes[k] = []; });
   initiatives.forEach(function(i){ if(goalLanes[i.goal]) goalLanes[i.goal].push(i); });
+  // Numeric ID sort: splits "2.2.10" into [2,2,10] and compares segment by segment
+  function compareIds(a, b){
+    var ap = String(a.id || "").split(".").map(Number);
+    var bp = String(b.id || "").split(".").map(Number);
+    for(var i = 0; i < Math.max(ap.length, bp.length); i++){
+      var av = ap[i] || 0, bv = bp[i] || 0;
+      if(av !== bv) return av - bv;
+    }
+    return 0;
+  }
+
   Object.keys(goalLanes).forEach(function(k){
-    goalLanes[k].sort(function(a,b){
-      var ar = a.q3Rank || a.q2Rank || 999, br = b.q3Rank || b.q2Rank || 999;
-      return ar - br;
-    });
+    goalLanes[k].sort(function(a, b){ return compareIds(a, b); });
   });
 
   return (
@@ -1128,6 +1278,7 @@ function App(){
 
   var ist = useState([]); var initiatives = ist[0], setInitiatives = ist[1];
   var gref = useState({}); var goalsRef = gref[0], setGoalsRef = gref[1];
+  var cref = useState({}); var capRef = cref[0], setCapRef = cref[1];
   var ls = useState("loading"); var loadState = ls[0], setLoadState = ls[1];
   var le = useState(""); var loadError = le[0], setLoadError = le[1];
   var la = useState(null); var loadedAt = la[0], setLoadedAt = la[1];
@@ -1135,36 +1286,35 @@ function App(){
   function loadLive(){
     setLoadState("loading");
     setLoadError("");
-    // Load both CSVs in parallel; the initiatives CSV is required, goals CSV is best-effort
+
     var initsPromise = fetch(addCacheBuster(LIVE_CSV_URL), {cache:"no-store"})
-      .then(function(r){
-        if(!r.ok) throw new Error("HTTP "+r.status+" from initiatives sheet");
-        return r.text();
-      })
+      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status+" from initiatives sheet"); return r.text(); })
       .then(function(txt){
-        if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Initiatives sheet returned HTML — may not be published correctly");
+        if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Initiatives sheet returned HTML");
         return normalizeLiveData(txt);
       });
 
     var goalsPromise = fetch(addCacheBuster(GOALS_CSV_URL), {cache:"no-store"})
-      .then(function(r){
-        if(!r.ok) throw new Error("HTTP "+r.status+" from goals sheet");
-        return r.text();
-      })
+      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status+" from goals sheet"); return r.text(); })
       .then(function(txt){
         if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Goals sheet returned HTML");
         return normalizeGoalsData(txt);
       })
-      .catch(function(err){
-        // Goals CSV is optional — log but don't block the main load
-        console.warn("Goals reference load failed (non-blocking):", err.message);
-        return {};
-      });
+      .catch(function(err){ console.warn("Goals load failed:", err.message); return {}; });
 
-    Promise.all([initsPromise, goalsPromise])
+    var capPromise = fetch(addCacheBuster(CAPACITY_CSV_URL), {cache:"no-store"})
+      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status+" from capacity sheet"); return r.text(); })
+      .then(function(txt){
+        if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Capacity sheet returned HTML");
+        return normalizeCapacityData(txt);
+      })
+      .catch(function(err){ console.warn("Capacity load failed (non-blocking):", err.message); return {}; });
+
+    Promise.all([initsPromise, goalsPromise, capPromise])
       .then(function(results){
         setInitiatives(results[0]);
         setGoalsRef(results[1]);
+        setCapRef(results[2]);
         setLoadState("live");
         setLoadedAt(new Date());
       })
@@ -1262,7 +1412,7 @@ function App(){
         )}
       </div>
 
-      {drillInit && <DrillPanel init={drillInit} zIndex={lastPanel === "drill" ? 1100 : 1000} onClose={function(){setDrillRaw(null);}}/>}
+      {drillInit && <DrillPanel init={drillInit} capRef={capRef} zIndex={lastPanel === "drill" ? 1100 : 1000} onClose={function(){setDrillRaw(null);}}/>}
       {goalDrill && <GoalPanel goalKey={goalDrill} allInitiatives={initiatives} goalsRef={goalsRef} zIndex={lastPanel === "goal" ? 1100 : 1000} onClose={function(){setGoalDrillRaw(null);}}/>}
       {listDrill && <ListPanel list={listDrill} label={listDrill.label} sublabel={listDrill.sublabel} accent={listDrill.accent} zIndex={lastPanel === "list" ? 1100 : 1000} onItemDrill={function(id){setListDrillRaw(null);setDrill(id);}} onClose={function(){setListDrillRaw(null);}}/>}
     </div>
