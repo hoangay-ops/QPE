@@ -339,6 +339,7 @@ ErrorBoundaryClass.prototype.render = function(){
 const {useState,useMemo,useRef,useEffect} = React;
 
 // ─── Small UI helpers ────────────────────────────────────────────────────────
+function AoU(){ return <em style={{fontStyle:"italic"}}>All of Us</em>; }
 function Chip(props){
   return <span className="chip" style={{background:props.bg,color:props.tx,fontSize:props.size||10}}>{props.children}</span>;
 }
