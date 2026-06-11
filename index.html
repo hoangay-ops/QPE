@@ -856,9 +856,6 @@ function MainView(props){
   var initiatives = props.initiatives, onDrill = props.onDrill, onGoalDrill = props.onGoalDrill, goalFocus = props.goalFocus;
   var goalsRef = props.goalsRef || {};
 
-  // Top-ranked uses last cycle's CEO-ratified rank (q2Rank). Goal-owner Q3 ranks not displayed.
-  var ranked = initiatives.filter(function(i){return i.q2Rank != null;}).sort(function(a,b){return a.q2Rank - b.q2Rank;});
-  var top3 = ranked.slice(0,3);
   var newOnes = initiatives.filter(function(i){return i.isNew;});
 
   // Cycle story buckets
@@ -1044,39 +1041,6 @@ function MainView(props){
         </div>
       </div>
       </section>
-
-      {/* Top-ranked: last cycle's CEO-ratified priorities */}
-      {top3.length > 0 && (
-        <section id="qpe-section-topranked" style={{marginBottom:24}}>
-          <div className="section-h" style={{color:"#9A6800"}}>
-            <span>★ Last cycle's CEO-ratified top priorities</span>
-            <span className="rule" style={{background:"#F4D03F"}}/>
-            <span style={{fontSize:10,color:"#aaa",letterSpacing:0,fontWeight:400,textTransform:"none"}}>({CYCLE.previous})</span>
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",gap:12}}>
-            {top3.map(function(t){
-              var g = GOALS[t.goal];
-              var summary = (t.shortDesc || "").slice(0, 120);
-              return (
-                <div key={t.id} className="card card-hover" onClick={function(){onDrill(t.id);}} style={{padding:"14px 16px",position:"relative"}}>
-                  <div style={{position:"absolute",top:10,right:14,fontSize:30,fontWeight:800,color:"#F4D03F",lineHeight:1,opacity:.4}}>#{t.q2Rank}</div>
-                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8,flexWrap:"wrap"}}>
-                    <Chip bg={g.color+"22"} tx={g.color}>G{g.num}</Chip>
-                    <span style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:1,color:"#9A6800",fontWeight:700}}>★ CEO rank #{t.q2Rank}</span>
-                  </div>
-                  <div style={{fontSize:14,fontWeight:700,color:"#1a1a1a",lineHeight:1.3,marginBottom:8,paddingRight:30}}>{t.name}</div>
-                  <div style={{fontSize:11,color:"#666",marginBottom:10,lineHeight:1.45}}>{summary}{(t.shortDesc||"").length > 120 ? "…" : ""}</div>
-                  <div style={{display:"flex",gap:4,flexWrap:"wrap",alignItems:"center"}}>
-                    {t.status && <StatusChip s={t.status}/>}
-                    {t.isNew && <NewBadge/>}
-                    <span style={{fontSize:10.5,color:"#999",marginLeft:"auto"}}>{t.objOwner}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       {/* New proposals */}
       {newOnes.length > 0 && (
