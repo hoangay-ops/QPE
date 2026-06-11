@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--hub-bg);color:#1a1a1a;overflow:hidden;}
+  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f7f8fa;color:#1a1a1a;overflow:hidden;}
   button,select,input{font-family:inherit;}
   ::-webkit-scrollbar{width:8px;height:8px;}
   ::-webkit-scrollbar-thumb{background:#d8d8d8;border-radius:4px;}
@@ -21,72 +21,31 @@
   .chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap;}
   .section-h{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#666;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
   .section-h .rule{flex:1;height:1px;background:#ddd;}
-
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   All of Us Planning Hub — shared visual system
-   Applies a consistent header, toolbar, card, and spacing rhythm across tabs.
-   ───────────────────────────────────────────────────────────────────────────── */
-:root{
-  --hub-bg:#f4f6f8;
-  --hub-surface:#ffffff;
-  --hub-surface-alt:#fafbfc;
-  --hub-border:#dde3ec;
-  --hub-border-soft:#eceff3;
-  --hub-text:#18222f;
-  --hub-muted:#6f7f8f;
-  --hub-faint:#9aa8b5;
-  --hub-brand:#2471A3;
-  --hub-brand-soft:#EBF5FB;
-  --hub-danger:#C0392B;
-  --hub-shadow:0 1px 3px rgba(20,35,55,.05),0 8px 24px rgba(20,35,55,.04);
-  --hub-radius:12px;
-}
-html,body{background:var(--hub-bg)!important;color:var(--hub-text);}
-button,select,input{font-family:inherit;}
-.card,.g-card{border-color:var(--hub-border-soft)!important;border-radius:var(--hub-radius)!important;box-shadow:0 1px 2px rgba(20,35,55,.03);}
-.hub-top{flex-shrink:0;background:var(--hub-bg);border-bottom:1px solid var(--hub-border);padding:16px 24px 14px;display:flex;flex-direction:column;gap:12px;}
-.hub-header-card{background:var(--hub-surface);border:1px solid var(--hub-border);border-radius:var(--hub-radius);box-shadow:var(--hub-shadow);padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;}
-.hub-header-main{min-width:0;display:flex;flex-direction:column;gap:4px;}
-.hub-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:var(--hub-muted);font-weight:700;line-height:1.2;}
-.hub-title{font-size:21px;font-weight:750;color:var(--hub-text);line-height:1.15;letter-spacing:-.25px;}
-.hub-subtitle{font-size:12px;color:var(--hub-muted);line-height:1.35;max-width:720px;}
-.hub-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;flex-shrink:0;}
-.hub-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:650;padding:4px 10px;border-radius:999px;background:var(--hub-surface-alt);border:1px solid var(--hub-border-soft);color:var(--hub-muted);white-space:nowrap;}
-.hub-pill.good{background:#EAF7EF;border-color:#D7EFDF;color:#1E8449;}
-.hub-pill.warn{background:#FEF9E7;border-color:#F5E6A8;color:#7D6008;}
-.hub-btn{font-size:11.5px;padding:6px 12px;border:1px solid var(--hub-border);border-radius:8px;background:#fff;color:#475569;cursor:pointer;font-weight:600;line-height:1.2;}
-.hub-btn:hover{border-color:var(--hub-brand);color:var(--hub-brand);background:var(--hub-brand-soft);}
-.hub-btn.primary{border-color:#C8DCF0;background:var(--hub-brand-soft);color:var(--hub-brand);}
-.hub-toolbar{background:var(--hub-surface);border:1px solid var(--hub-border);border-radius:var(--hub-radius);box-shadow:var(--hub-shadow);padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-.hub-toolbar-label,.tb-lbl{font-size:9.5px!important;text-transform:uppercase!important;color:var(--hub-faint)!important;font-weight:800!important;letter-spacing:.06em!important;margin-right:2px;}
-.hub-status-row{background:var(--hub-surface-alt);border:1px solid var(--hub-border);border-radius:10px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--hub-muted);}
-.hub-metric-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;}
-.hub-metric{background:var(--hub-surface);border:1px solid var(--hub-border);border-radius:var(--hub-radius);padding:10px 12px;box-shadow:var(--hub-shadow);cursor:default;min-width:0;}
-.hub-metric.clickable{cursor:pointer;}
-.hub-metric.active{outline:2px solid rgba(36,113,163,.28);border-color:#9FC5E8;background:#F4FAFF;}
-.hub-metric-label{font-size:9px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hub-metric-value{font-size:22px;font-weight:850;line-height:1.05;margin-top:3px;}
-.hub-metric-sub{font-size:9.5px;opacity:.68;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hub-search{font-size:12px;padding:6px 11px;border:1px solid var(--hub-border);border-radius:999px;background:#fff;color:var(--hub-text);min-width:180px;}
-.hub-search:focus{outline:2px solid rgba(36,113,163,.18);border-color:var(--hub-brand);}
-.hub-workspace{padding:16px 24px;}
-@media(max-width:900px){.hub-header-card{flex-direction:column;gap:12px}.hub-actions{justify-content:flex-start}.hub-top{padding:12px}.hub-title{font-size:18px}.hub-metric-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
-
+  .snap-arrow{font-size:14px;font-weight:600;line-height:1;margin-right:4px;}
 </style>
 </head>
 <body>
 <div id="root" style="height:100%;display:flex;flex-direction:column;"></div>
 <script type="text/babel">
 
+// ─── Cycle configuration — single source of truth for quarter labels ────────
+const CYCLE = {
+  current:       "Q3 2026",
+  previous:      "Q2 2026",
+  baseline:      "Q4 2025",
+  currentShort:  "Q3 '26",
+  previousShort: "Q2 '26",
+};
+
 // ─── Reference Data ──────────────────────────────────────────────────────────
+// Goal names consolidated to match Capacity and Roadmap dashboards
 const GOALS = {
   "1":{num:"1",name:"Enrollment & Retention",color:"#2471A3"},
-  "2":{num:"2",name:"Data Available to Researchers",color:"#1E8449"},
-  "3":{num:"3",name:"Partnered Research Studies",color:"#D35400"},
-  "4":{num:"4",name:"Researcher Access & Impact",color:"#B7950B"},
+  "2":{num:"2",name:"Data to Researchers",color:"#1E8449"},
+  "3":{num:"3",name:"Partnered Research",color:"#D35400"},
+  "4":{num:"4",name:"Researcher Access",color:"#B7950B"},
   "5":{num:"5",name:"Return of Value",color:"#7D3C98"},
-  "6":{num:"6",name:"Management & Operations",color:"#5D6D7E"},
+  "6":{num:"6",name:"Management & Ops",color:"#5D6D7E"},
 };
 const STATUS_CFG = {
   Committed:  {bg:"#D6EAF8",tx:"#1F618D",dot:"#2471A3"},
@@ -97,7 +56,7 @@ const STATUS_CFG = {
   Concept:    {bg:"#F4ECF7",tx:"#6C3483",dot:"#6C3483"},
 };
 const STATUS_KEYS = ["Committed","Proposed","Backlogged","Complete","Eliminated","Concept"];
-const QUARTERS_HIST = ["Q4 2025","Q2 2026","Q3 2026"];
+const QUARTERS_HIST = [CYCLE.baseline, CYCLE.previous, CYCLE.current];
 
 // ─── Live CSV loader ─────────────────────────────────────────────────────────
 const LIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3uNKjiErriTzB7r258GdfQdeXVhzjbfG4VZr5J0u9ZMj9punGsNHbnzeaGyuiC3-VT1cUHAqrOSXI/pub?gid=0&single=true&output=csv";
@@ -200,7 +159,9 @@ function normalizeLiveData(csvText){
     var q3s = get(row, "Q3 2026 Status", "Q3 Status");
     var q2s = get(row, "Q2 2026 Status", "Q2 Status");
     var prev = get(row, "Previous Status (Q4 '25)", "Previous Status", "Q4 2025 Status");
+    // q2Rank = previous quarter's CEO-ratified rank (this is what we display as "top-ranked")
     var q2r = parseRank(get(row, "Q2 '26 Rank", "Q2 2026 Rank"));
+    // q3Rank = current quarter's goal-owner proposed rank — collected but not displayed
     var q3r = parseRank(get(row, "New Q3 '26 Rank", "Q3 '26 Rank", "Q3 2026 Rank"));
     var pt = get(row, "Project Type", "Type");
     var full = get(row, "Initiative Full Description", "Full Description", "Description");
@@ -211,9 +172,9 @@ function normalizeLiveData(csvText){
     var objName = get(row, "Objective Name", "Obj Name");
 
     var history = [];
-    if(prev) history.push({quarter:"Q4 2025", status:parseStatus(prev), raw:prev});
-    if(q2s)  history.push({quarter:"Q2 2026", status:parseStatus(q2s),  raw:q2s});
-    if(q3s)  history.push({quarter:"Q3 2026", status:parseStatus(q3s),  raw:q3s});
+    if(prev) history.push({quarter:CYCLE.baseline, status:parseStatus(prev), raw:prev});
+    if(q2s)  history.push({quarter:CYCLE.previous, status:parseStatus(q2s),  raw:q2s});
+    if(q3s)  history.push({quarter:CYCLE.current,  status:parseStatus(q3s),  raw:q3s});
 
     inits.push({
       id:id, name:name, goal:goal, obj:obj, objName:objName,
@@ -230,7 +191,6 @@ function normalizeLiveData(csvText){
 }
 
 // Parse the Goals reference CSV. Expected to be one row per Objective, with Goal info repeated.
-// Returns: { "1": {num, name, desc, owner, objectives: [{obj, name, desc, owners:[...]}]}, ... }
 function normalizeGoalsData(csvText){
   var rows = parseCSV(csvText);
   if(rows.length === 0) throw new Error("Goals CSV is empty");
@@ -242,17 +202,11 @@ function normalizeGoalsData(csvText){
   }
   var header = rows[headerIdx];
 
-  // DEBUG: log what column headers we detected in the Goals CSV
-  console.log("=== Goals CSV headers detected ===");
-  console.log("Header row index:", headerIdx);
-  console.log("Raw headers:", header);
-  console.log("Normalized headers:", header.map(normHeader));
-
   var body = rows.slice(headerIdx + 1);
   var get = makeRowAccessor(header);
 
   var map = {};
-  var lastGoalNum = null;  // for fill-down when Goal column is blank
+  var lastGoalNum = null;
   body.forEach(function(row){
     var blank = true;
     for(var i = 0; i < row.length; i++){ if(row[i] && String(row[i]).trim()){ blank = false; break; } }
@@ -262,9 +216,6 @@ function normalizeGoalsData(csvText){
     var goalMatch = String(goalRaw).match(/(\d)/);
     var goalNum  = goalMatch ? goalMatch[1] : "";
 
-    // Fill-down: if this row has no Goal value but the previous row did, inherit it.
-    // Common when sheets list Goal info on the first row of a goal block and leave
-    // subsequent objective rows blank in the Goal column.
     if(!goalNum && lastGoalNum) goalNum = lastGoalNum;
     if(!goalNum) return;
     lastGoalNum = goalNum;
@@ -308,15 +259,10 @@ function normalizeGoalsData(csvText){
   return map;
 }
 
-// Parse the Capacity Calculations tab.
-// Returns: { "1.3.18": { confidenceFactor, confidenceLabel, ciNum, performers,
-//            committed, possiblyXS, possiblyS, possiblyM, possiblyL, possiblyXL,
-//            noCapacity, notPerforming }, ... }
 function normalizeCapacityData(csvText){
   var rows = parseCSV(csvText);
   if(rows.length === 0) throw new Error("Capacity CSV is empty");
 
-  // Find the header row — first row where col 0 normalizes to "id"
   var headerIdx = 0;
   for(var i = 0; i < Math.min(6, rows.length); i++){
     if(rows[i][0] && normHeader(rows[i][0]) === "id"){ headerIdx = i; break; }
@@ -325,22 +271,18 @@ function normalizeCapacityData(csvText){
   var body   = rows.slice(headerIdx + 1);
   var get    = makeRowAccessor(header);
 
-  // The Confidence Index label is in col C (index 2) — not a named header, grab by position
   var map = {};
   body.forEach(function(row){
     var id = get(row, "ID");
-    // Only keep rows with a valid dotted initiative ID format
     if(!id || !/^\d+\.\d+/.test(id)) return;
 
-    // Confidence Factor: exported as "90%" or "0.9" — normalise to 0-1 float
     var cfRaw = get(row, "Confidence Factor");
     var cf = 0;
     if(cfRaw.indexOf("%") !== -1){ cf = parseFloat(cfRaw) / 100; }
     else { cf = parseFloat(cfRaw) || 0; }
     if(isNaN(cf)) cf = 0;
 
-    // Confidence Index label lives in col index 2 (column C in the sheet)
-    var ciLabel = String(row[2] || "").trim(); // e.g. "Confidence Index: 9"
+    var ciLabel = String(row[2] || "").trim();
     var ciMatch = ciLabel.match(/(\d+)/);
     var ciNum   = ciMatch ? parseInt(ciMatch[1], 10) : null;
 
@@ -365,6 +307,7 @@ function normalizeCapacityData(csvText){
   if(Object.keys(map).length === 0) throw new Error("No capacity rows found — check tab gid");
   return map;
 }
+
 function ErrorBoundaryClass(props){
   React.Component.call(this, props);
   this.state = {err: null};
@@ -372,7 +315,6 @@ function ErrorBoundaryClass(props){
 ErrorBoundaryClass.prototype = Object.create(React.Component.prototype);
 ErrorBoundaryClass.prototype.constructor = ErrorBoundaryClass;
 ErrorBoundaryClass.prototype.componentDidCatch = function(err, info){
-  console.error("Caught error:", err, info);
   this.setState({err: err});
 };
 ErrorBoundaryClass.prototype.render = function(){
@@ -400,11 +342,6 @@ const {useState,useMemo,useRef,useEffect} = React;
 function Chip(props){
   return <span className="chip" style={{background:props.bg,color:props.tx,fontSize:props.size||10}}>{props.children}</span>;
 }
-function GoalChip(props){
-  var c = GOALS[props.g];
-  if(!c) return null;
-  return <Chip bg={c.color+"22"} tx={c.color} size={props.size}>G{c.num}</Chip>;
-}
 function GoalChipFull(props){
   var c = GOALS[props.g];
   if(!c) return null;
@@ -419,11 +356,7 @@ function NewBadge(props){
   return <Chip bg="#FEF5E7" tx="#9A6800" size={props.size||9}>NEW</Chip>;
 }
 
-// PSI URL lookup table — keyed by initiative ID.
-// Populated from the canonical list of PSI overview pages. When a new initiative
-// is added, append a new entry here. When a PSI URL changes, update here.
-// (Long-term: consider adding a "PSI URL" column to the planning sheet and reading
-// from there instead of hardcoding.)
+// PSI URL lookup. (Long-term: move to a sheet column so additions don't require a code edit.)
 const PSI_URL_MAP = {
   "1.3.18": "https://sites.google.com/nih.gov/aou-project-status-inventory/psi-home/initiatives/1-3-18-implement-pediatrics-7-12",
   "1.3.19": "https://sites.google.com/nih.gov/aou-project-status-inventory/psi-home/initiatives/1-3-19-pediatrics-13-protocol",
@@ -513,8 +446,6 @@ const PSI_URL_MAP = {
   "6.4.4":  "https://sites.google.com/nih.gov/aou-project-status-inventory/psi-home/initiatives/6-4-4-targeted-partnerships",
 };
 
-// Look up PSI URL by ID. Falls back to a slugified construction if no entry exists,
-// which will sometimes be wrong but is better than no link at all.
 function buildPsiUrl(init){
   if(PSI_URL_MAP[init.id]) return PSI_URL_MAP[init.id];
   var idPart = String(init.id || "").replace(/\./g, "-");
@@ -574,7 +505,6 @@ function DrillPanel(props){
   var g = GOALS[init.goal];
   var cap = capRef[init.id] || null;
 
-  // Derive confidence colour from CI number
   function ciColor(n){
     if(n == null) return "#999";
     if(n >= 9) return "#1E8449";
@@ -583,9 +513,7 @@ function DrillPanel(props){
     return "#C0392B";
   }
 
-  // Summarise "possibly" count — all possibly-* buckets combined
   var possiblyTotal = cap ? cap.possiblyXS + cap.possiblyS + cap.possiblyM + cap.possiblyL + cap.possiblyXL : 0;
-  // LOE label for dominant possibly bucket (for tooltips, future use)
 
   return (
     <div style={{position:"fixed",top:0,right:0,bottom:0,width:"440px",maxWidth:"42vw",background:"#fff",borderLeft:"1px solid #ececec",boxShadow:"-4px 0 16px rgba(0,0,0,.08)",zIndex:props.zIndex || 1000,display:"flex",flexDirection:"column"}}>
@@ -595,7 +523,7 @@ function DrillPanel(props){
             <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6,flexWrap:"wrap"}}>
               <span style={{fontFamily:"monospace",fontSize:11,color:"#999"}}>{init.id}</span>
               {init.isNew && <NewBadge size={10}/>}
-              {init.q3Rank != null && <Chip bg="#FEF5E7" tx="#9A6800" size={10}>★ Q3 rank #{init.q3Rank}</Chip>}
+              {init.q2Rank != null && <Chip bg="#FEF5E7" tx="#9A6800" size={10}>★ CEO rank #{init.q2Rank} ({CYCLE.previousShort})</Chip>}
             </div>
             <div style={{fontSize:15,fontWeight:700,lineHeight:1.3,color:"#111"}}>{init.name}</div>
           </div>
@@ -614,11 +542,10 @@ function DrillPanel(props){
             {QUARTERS_HIST.map(function(q, i){
               var h = init.history.find(function(x){return x.quarter === q;});
               var s = h ? h.status : null;
-              // For the current quarter (Q3 2026) with Proposed status, split into Proposed (New) vs Proposed (Ongoing)
               var displayLabel = s;
               var displayBg = s ? STATUS_CFG[s] && STATUS_CFG[s].bg : null;
               var displayTx = s ? STATUS_CFG[s] && STATUS_CFG[s].tx : null;
-              if(s === "Proposed" && q === "Q3 2026"){
+              if(s === "Proposed" && q === CYCLE.current){
                 if(init.isNew){
                   displayLabel = "Proposed (New)";
                   displayBg = "#FEF5E7";
@@ -643,12 +570,10 @@ function DrillPanel(props){
             })}
           </div>
         </div>
-        {/* Capacity signal — from calculations tab */}
         {cap ? (
           <div style={{marginBottom:12,padding:"10px 12px",borderRadius:6,background:"#fff",border:"1px solid #ececec"}}>
-            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:8}}>Capacity signal — Q3 2026</div>
+            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:8}}>Capacity signal — {CYCLE.current}</div>
 
-            {/* Confidence bar */}
             <div style={{marginBottom:8}}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
                 <span style={{fontSize:11.5,fontWeight:700,color:ciColor(cap.ciNum)}}>{cap.confidenceLabel || "—"}</span>
@@ -660,7 +585,6 @@ function DrillPanel(props){
               <div style={{fontSize:9.5,color:"#aaa",marginTop:3,textAlign:"right"}}>{Math.round(cap.confidenceFactor * 100)}%</div>
             </div>
 
-            {/* Staffing breakdown */}
             <div style={{display:"grid",gridTemplateColumns:"auto 1fr auto",gap:"4px 10px",fontSize:11.5,alignItems:"center"}}>
               {cap.committed > 0 && (
                 <>
@@ -674,7 +598,6 @@ function DrillPanel(props){
                   <span style={{color:"#B7950B",fontWeight:600}}>~</span>
                   <span style={{color:"#555"}}>
                     Possibly
-                    {/* Show size breakdown inline if mixed */}
                     {" "}
                     <span style={{fontSize:10,color:"#aaa"}}>
                       {[
@@ -707,7 +630,7 @@ function DrillPanel(props){
           </div>
         ) : (
           <div style={{marginBottom:12,padding:"10px 12px",borderRadius:6,background:"#fafbfc",border:"1px solid #ececec"}}>
-            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:4}}>Capacity signal — Q3 2026</div>
+            <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,marginBottom:4}}>Capacity signal — {CYCLE.current}</div>
             <div style={{fontSize:11.5,color:"#bbb",fontStyle:"italic"}}>No capacity data for this initiative yet.</div>
           </div>
         )}
@@ -729,8 +652,7 @@ function DrillPanel(props){
           <div style={{display:"grid",gridTemplateColumns:"auto 1fr",gap:"6px 14px",fontSize:11.5}}>
             <span style={{color:"#999"}}>Objective Owner</span><span>{init.objOwner || "—"}</span>
             <span style={{color:"#999"}}>POC / PdM</span><span>{init.poc || "—"}</span>
-            <span style={{color:"#999"}}>Q2 '26 rank</span><span>{init.q2Rank != null ? "#"+init.q2Rank : <span style={{color:"#bbb"}}>not ranked</span>}</span>
-            <span style={{color:"#999"}}>New Q3 '26 rank</span><span>{init.q3Rank != null ? "#"+init.q3Rank : <span style={{color:"#bbb"}}>not yet ranked</span>}</span>
+            <span style={{color:"#999"}}>CEO rank ({CYCLE.previousShort})</span><span>{init.q2Rank != null ? "#"+init.q2Rank : <span style={{color:"#bbb"}}>not ranked</span>}</span>
           </div>
         </div>
         <a href={buildPsiUrl(init)} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:11.5,color:"#2471A3",textDecoration:"none",padding:"6px 12px",border:"1px solid #C8DCF0",borderRadius:6,background:"#EBF5FB",fontWeight:500}}>View in PSI ↗</a>
@@ -749,19 +671,6 @@ function GoalPanel(props){
   if(!g) return null;
   var ref = goalsRef[gk] || {};
 
-  // DEBUG: log what was parsed for this goal so we can diagnose missing descriptions
-  console.log("=== Goal "+gk+" parsed from reference ===");
-  console.log("Goal name:", ref.name);
-  console.log("Goal desc:", ref.desc);
-  console.log("Goal owner:", ref.owner);
-  console.log("Objectives:", ref.objectives);
-  if(ref.objectives){
-    ref.objectives.forEach(function(o){
-      console.log("  Obj "+o.obj+": name='"+(o.name||"")+"' desc='"+(o.desc||"")+"' owners=["+(o.owners||[]).join(",")+"]");
-    });
-  }
-
-  // Aggregate per-objective initiative counts and owners from the FULL initiative list
   var goalInits = allInits.filter(function(i){return i.goal === gk;});
   var observedObjMap = {};
   goalInits.forEach(function(i){
@@ -773,9 +682,6 @@ function GoalPanel(props){
     if(i.objOwner) observedObjMap[i.obj].ownersFromInits[i.objOwner] = true;
   });
 
-  // Build objectives list: prefer the reference as the source of truth (so all objectives
-  // appear even if they have zero initiatives this quarter), and merge in any observed
-  // objectives that aren't in the reference.
   var refObjMap = {};
   (ref.objectives || []).forEach(function(o){ refObjMap[o.obj] = o; });
 
@@ -783,7 +689,6 @@ function GoalPanel(props){
   Object.keys(refObjMap).forEach(function(k){ allObjKeys[k] = true; });
   Object.keys(observedObjMap).forEach(function(k){ allObjKeys[k] = true; });
 
-  // Sort objective keys numerically (e.g., 5.1, 5.2, ..., 5.10 in correct order)
   var objectives = Object.keys(allObjKeys).sort(function(a,b){
     var aParts = a.split(".").map(Number);
     var bParts = b.split(".").map(Number);
@@ -869,7 +774,7 @@ function GoalPanel(props){
   );
 }
 
-// ─── List Panel (drill from a summary card into the underlying initiatives) ──
+// ─── List Panel ──────────────────────────────────────────────────────────────
 function ListPanel(props){
   if(!props.list) return null;
   var list = props.list;
@@ -889,7 +794,6 @@ function ListPanel(props){
         {list.items.length === 0 ? (
           <div style={{padding:"30px",textAlign:"center",color:"#bbb",fontSize:12,fontStyle:"italic"}}>No initiatives in this bucket.</div>
         ) : (
-          // Group by Goal for easier scanning
           (function(){
             var byGoal = {};
             list.items.forEach(function(i){
@@ -912,7 +816,6 @@ function ListPanel(props){
                         <div key={i.id} className="row-hover" onClick={function(){props.onItemDrill(i.id);}} style={{padding:"7px 10px",borderRadius:5,background:"#fff",border:"1px solid #ececec",cursor:"pointer",display:"flex",alignItems:"center",gap:8,minWidth:0}}>
                           <span style={{width:7,height:7,borderRadius:"50%",background:sc?sc.dot:"#ccc",flexShrink:0}}/>
                           <span style={{fontFamily:"monospace",fontSize:10,color:"#aaa",flexShrink:0}}>{i.id}</span>
-                          {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,flexShrink:0}}>#{i.q3Rank}</span>}
                           <span style={{fontSize:11.5,color:"#333",flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name}</span>
                           {i.isNew && <NewBadge size={8.5}/>}
                         </div>
@@ -929,7 +832,7 @@ function ListPanel(props){
   );
 }
 
-// ─── Card: Goal chip top-left, no side border ────────────────────────────────
+// ─── Init card ───────────────────────────────────────────────────────────────
 function InitCard(props){
   var i = props.init;
   var g = GOALS[i.goal];
@@ -939,7 +842,6 @@ function InitCard(props){
         <Chip bg={g.color+"22"} tx={g.color} size={9.5}>G{g.num}</Chip>
         <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa"}}>{i.id}</span>
         {i.isNew && <NewBadge size={9}/>}
-        {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,marginLeft:"auto"}}>#{i.q3Rank}</span>}
       </div>
       <div style={{fontSize:12.5,fontWeight:600,color:"#222",lineHeight:1.35}}>{i.name}</div>
       {i.shortDesc && <div style={{fontSize:10.5,color:"#888",lineHeight:1.4,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{i.shortDesc}</div>}
@@ -948,84 +850,22 @@ function InitCard(props){
   );
 }
 
-// Slim card variant for dense lists
-function InitCardSlim(props){
-  var i = props.init;
-  var g = GOALS[i.goal];
-  return (
-    <div className="row-hover" onClick={function(){props.onDrill(i.id);}} style={{padding:"7px 10px",borderRadius:6,background:"#fff",border:"1px solid #ececec",display:"flex",alignItems:"center",gap:8,minWidth:0,cursor:"pointer"}}>
-      <Chip bg={g.color+"22"} tx={g.color} size={9}>G{g.num}</Chip>
-      <span style={{fontFamily:"monospace",fontSize:9.5,color:"#aaa",flexShrink:0}}>{i.id}</span>
-      <span style={{fontSize:11.5,color:"#333",fontWeight:500,flex:1,minWidth:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}} title={i.name}>{i.name}</span>
-      {i.isNew && <NewBadge size={8.5}/>}
-      {i.q3Rank != null && <span style={{fontSize:10,color:"#9A6800",fontWeight:700,flexShrink:0}}>#{i.q3Rank}</span>}
-    </div>
-  );
-}
-
-// ─── Main unified page ───────────────────────────────────────────────────────
+// ─── Main view ───────────────────────────────────────────────────────────────
 function MainView(props){
   var initiatives = props.initiatives, onDrill = props.onDrill, onGoalDrill = props.onGoalDrill, goalFocus = props.goalFocus;
   var goalsRef = props.goalsRef || {};
-  var displayQuarter = "Q3 2026";
 
-  var ranked = initiatives.filter(function(i){return i.q3Rank != null;}).sort(function(a,b){return a.q3Rank - b.q3Rank;});
+  // Top-ranked uses last cycle's CEO-ratified rank (q2Rank). Goal-owner Q3 ranks not displayed.
+  var ranked = initiatives.filter(function(i){return i.q2Rank != null;}).sort(function(a,b){return a.q2Rank - b.q2Rank;});
   var top3 = ranked.slice(0,3);
   var newOnes = initiatives.filter(function(i){return i.isNew;});
 
-  // Briefing status mix: Backlogged · Proposed (new) · Proposed (ongoing)
-  var briefingMix = useMemo(function(){
-    var buckets = {
-      "Backlogged":         {n:0, color:STATUS_CFG.Backlogged.dot},
-      "Proposed (new)":     {n:0, color:"#F4D03F"},
-      "Proposed (ongoing)": {n:0, color:STATUS_CFG.Proposed.dot},
-    };
-    initiatives.forEach(function(i){
-      if(i.status === "Backlogged"){ buckets["Backlogged"].n++; return; }
-      if(i.status === "Proposed" && i.isNew){ buckets["Proposed (new)"].n++; return; }
-      if(i.status === "Proposed"){ buckets["Proposed (ongoing)"].n++; return; }
-    });
-    return buckets;
-  },[initiatives]);
-
-  // Changes computation (Q2 2026 → Q3 2026, fixed for now since it's the planning cycle)
-  var fromQ = "Q2 2026", toQ = "Q3 2026";
-  function rankFor(i, q){
-    if(q === "Q2 2026") return i.q2Rank;
-    if(q === "Q3 2026") return i.q3Rank;
-    return null;
-  }
-  var changes = useMemo(function(){
-    var added=[], removed=[], statusChanged=[], unchanged=[];
-    initiatives.forEach(function(i){
-      var fH = i.history.find(function(h){return h.quarter === fromQ;});
-      var tH = i.history.find(function(h){return h.quarter === toQ;});
-      var fS = fH ? fH.status : null;
-      var tS = tH ? tH.status : null;
-      if(!fH && tH){ added.push({init:i, fromS:null, toS:tS}); return; }
-      if(fH && !tH){ removed.push({init:i, fromS:fS, toS:null}); return; }
-      if(fS !== tS){ statusChanged.push({init:i, fromS:fS, toS:tS}); return; }
-      unchanged.push({init:i});
-    });
-    var promotions  = statusChanged.filter(function(c){return c.fromS === "Proposed" && c.toS === "Committed";});
-    var demotions   = statusChanged.filter(function(c){return (c.fromS === "Committed" || c.fromS === "Proposed") && (c.toS === "Backlogged" || c.toS === "Eliminated");});
-    var completions = statusChanged.filter(function(c){return c.toS === "Complete";});
-    var revivals    = statusChanged.filter(function(c){return c.fromS === "Backlogged" && c.toS !== "Backlogged";});
-    var concepts    = statusChanged.filter(function(c){return c.fromS === "Concept";});
-    var otherStatus = statusChanged.filter(function(c){
-      return promotions.indexOf(c) === -1 && demotions.indexOf(c) === -1 && completions.indexOf(c) === -1 && revivals.indexOf(c) === -1 && concepts.indexOf(c) === -1;
-    });
-    return {added:added,removed:removed,promotions:promotions,demotions:demotions,completions:completions,revivals:revivals,otherStatus:otherStatus,unchanged:unchanged};
-  },[initiatives]);
-
-  // Reframed change buckets: tell the story of "what happened to last quarter's commitments,
-  // plus what's newly proposed on top." This makes the math provable: completed + backlogged
-  // + ongoing should equal Q2 Committed total; adding new gives the current candidate total.
+  // Cycle story buckets
   var cycleStory = useMemo(function(){
     var lastCommittedIds = {};
     var lastBackloggedIds = {};
     initiatives.forEach(function(i){
-      var q2H = i.history.find(function(h){return h.quarter === "Q2 2026";});
+      var q2H = i.history.find(function(h){return h.quarter === CYCLE.previous;});
       if(q2H && q2H.status === "Committed") lastCommittedIds[i.id] = true;
       if(q2H && q2H.status === "Backlogged") lastBackloggedIds[i.id] = true;
     });
@@ -1041,14 +881,11 @@ function MainView(props){
       return lastCommittedIds[i.id] && (i.status === "Proposed" || i.status === "Committed") && !i.isNew;
     });
     var newProposed = initiatives.filter(function(i){
-      // True "new this cycle": flagged NEW in sheet AND no prior-quarter history.
-      // (Without the history check, items flagged NEW but carried from a prior cycle inflate the count.)
       if(!i.isNew) return false;
       if(i.status !== "Proposed") return false;
-      var hadPriorHistory = i.history.some(function(h){return h.quarter !== "Q3 2026" && h.status;});
+      var hadPriorHistory = i.history.some(function(h){return h.quarter !== CYCLE.current && h.status;});
       return !hadPriorHistory;
     });
-    // Revived: was Backlogged last cycle, now Proposed or Committed this cycle
     var revived = initiatives.filter(function(i){
       return lastBackloggedIds[i.id] && (i.status === "Proposed" || i.status === "Committed");
     });
@@ -1067,7 +904,6 @@ function MainView(props){
   var goalLanes = {};
   Object.keys(GOALS).forEach(function(k){ goalLanes[k] = []; });
   initiatives.forEach(function(i){ if(goalLanes[i.goal]) goalLanes[i.goal].push(i); });
-  // Numeric ID sort: splits "2.2.10" into [2,2,10] and compares segment by segment
   function compareIds(a, b){
     var ap = String(a.id || "").split(".").map(Number);
     var bp = String(b.id || "").split(".").map(Number);
@@ -1083,18 +919,19 @@ function MainView(props){
   });
 
   return (
-    <div className="hub-workspace">
+    <div style={{padding:"20px 28px 32px"}}>
 
-      {/* === Combined top row: snapshot + change tiles side-by-side === */}
+      {/* Top row: snapshot + change tiles */}
       <section id="qpe-section-summary">
         <div style={{display:"flex",gap:10,marginBottom:24,flexWrap:"wrap",alignItems:"stretch"}}>
 
-        {/* Snapshot block — split into Last Cycle Outcomes (retrospective) + This Cycle (active) */}
         <div style={{display:"flex",gap:8,flex:"1 1 320px",minWidth:280}}>
 
-          {/* Last cycle — muted, smaller, retrospective */}
+          {/* Last cycle outcomes (retrospective) */}
           <div className="card" style={{padding:"10px 12px",display:"flex",flexDirection:"column",gap:4,flex:"0 1 160px",background:"#fafbfc",borderColor:"#ececec"}}>
-            <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600}}>← Last cycle outcomes</div>
+            <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:.5,color:"#999",fontWeight:600,display:"flex",alignItems:"center"}}>
+              <span className="snap-arrow" style={{color:"#999"}}>←</span>Outcomes from last cycle
+            </div>
             <div style={{display:"flex",gap:10,marginTop:4}}>
               <div>
                 <div style={{fontSize:9.5,color:"#999"}}>Completed</div>
@@ -1108,15 +945,17 @@ function MainView(props){
             <div style={{fontSize:9.5,color:"#aaa",marginTop:"auto",paddingTop:4}}>of {cycleStory.lastCommittedTotal} committed</div>
           </div>
 
-          {/* This cycle — primary, larger, the focus */}
+          {/* This cycle (active) */}
           <div className="card" style={{padding:"10px 14px 12px",display:"flex",flexDirection:"column",gap:6,flex:"1 1 200px"}}>
             <div className="card-hover" onClick={function(){props.onListDrill({
-              label:"In "+displayQuarter+" planning",
+              label:"In "+CYCLE.current+" planning",
               items: cycleStory.ongoing.concat(cycleStory.newProposed).concat(cycleStory.revived),
               sublabel: cycleStory.ongoing.length+" ongoing + "+cycleStory.newProposed.length+" new"+(cycleStory.revived.length ? " + "+cycleStory.revived.length+" revived" : ""),
               accent:"#666",
             });}} style={{cursor:"pointer",margin:"-4px -6px",padding:"4px 6px",borderRadius:5}}>
-              <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#2471A3",fontWeight:600}}>→ In {displayQuarter} planning</div>
+              <div style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:.5,color:"#2471A3",fontWeight:600,display:"flex",alignItems:"center"}}>
+                <span className="snap-arrow" style={{color:"#2471A3"}}>→</span>Candidates for this cycle
+              </div>
               <div style={{fontSize:24,fontWeight:700,lineHeight:1.1,marginTop:2,color:"#111"}}>{cycleStory.ongoing.length + cycleStory.newProposed.length + cycleStory.revived.length}</div>
               <div style={{fontSize:10,color:"#666",marginTop:1}}>{cycleStory.ongoing.length} ongoing + {cycleStory.newProposed.length} new{cycleStory.revived.length ? " + "+cycleStory.revived.length+" revived" : ""}</div>
             </div>
@@ -1145,10 +984,9 @@ function MainView(props){
           </div>
         </div>
 
-        {/* Change tiles — grouped: last cycle outcomes (muted) | this cycle candidates (active) */}
+        {/* Change tiles */}
         <div style={{display:"flex",gap:6,flex:"2 1 540px",flexWrap:"wrap",alignItems:"stretch"}}>
 
-          {/* Last cycle group */}
           <div className="card card-hover" onClick={function(){props.onListDrill({
             label:"✓ Completed",
             items: cycleStory.completed,
@@ -1170,10 +1008,8 @@ function MainView(props){
             <div style={{fontSize:9.5,color:"#aaa"}}>last cycle</div>
           </div>
 
-          {/* Visible divider */}
           <div style={{width:1,background:"#ddd",margin:"4px 4px",flexShrink:0}}/>
 
-          {/* This cycle group */}
           <div className="card card-hover" onClick={function(){props.onListDrill({
             label:"↻ Ongoing",
             items: cycleStory.ongoing,
@@ -1208,13 +1044,13 @@ function MainView(props){
       </div>
       </section>
 
-      {/* === Section 3: CEO / Top-ranked === */}
+      {/* Top-ranked: last cycle's CEO-ratified priorities */}
       {top3.length > 0 && (
         <section id="qpe-section-topranked" style={{marginBottom:24}}>
           <div className="section-h" style={{color:"#9A6800"}}>
-            <span>★ Top-ranked for {displayQuarter}</span>
+            <span>★ Last cycle's CEO-ratified top priorities</span>
             <span className="rule" style={{background:"#F4D03F"}}/>
-            <span style={{fontSize:10,color:"#aaa",letterSpacing:0,fontWeight:400,textTransform:"none"}}>(Goal Owner Ranking)</span>
+            <span style={{fontSize:10,color:"#aaa",letterSpacing:0,fontWeight:400,textTransform:"none"}}>({CYCLE.previous})</span>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",gap:12}}>
             {top3.map(function(t){
@@ -1222,10 +1058,10 @@ function MainView(props){
               var summary = (t.shortDesc || "").slice(0, 120);
               return (
                 <div key={t.id} className="card card-hover" onClick={function(){onDrill(t.id);}} style={{padding:"14px 16px",position:"relative"}}>
-                  <div style={{position:"absolute",top:10,right:14,fontSize:30,fontWeight:800,color:"#F4D03F",lineHeight:1,opacity:.4}}>#{t.q3Rank}</div>
+                  <div style={{position:"absolute",top:10,right:14,fontSize:30,fontWeight:800,color:"#F4D03F",lineHeight:1,opacity:.4}}>#{t.q2Rank}</div>
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8,flexWrap:"wrap"}}>
                     <Chip bg={g.color+"22"} tx={g.color}>G{g.num}</Chip>
-                    <span style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:1,color:"#9A6800",fontWeight:700}}>★ Rank #{t.q3Rank}</span>
+                    <span style={{fontSize:9.5,textTransform:"uppercase",letterSpacing:1,color:"#9A6800",fontWeight:700}}>★ CEO rank #{t.q2Rank}</span>
                   </div>
                   <div style={{fontSize:14,fontWeight:700,color:"#1a1a1a",lineHeight:1.3,marginBottom:8,paddingRight:30}}>{t.name}</div>
                   <div style={{fontSize:11,color:"#666",marginBottom:10,lineHeight:1.45}}>{summary}{(t.shortDesc||"").length > 120 ? "…" : ""}</div>
@@ -1241,7 +1077,7 @@ function MainView(props){
         </section>
       )}
 
-      {/* === Section 4: New proposals (now 2-column card grid) === */}
+      {/* New proposals */}
       {newOnes.length > 0 && (
         <section id="qpe-section-newproposed" style={{marginBottom:24}}>
           <div className="section-h" style={{color:"#9A6800"}}>
@@ -1257,10 +1093,10 @@ function MainView(props){
         </section>
       )}
 
-      {/* === Section 5: Goal lanes — Initiatives by Goal, fixed 3x2 grid === */}
+      {/* Goal lanes */}
       <section id="qpe-section-goallanes" style={{marginBottom:24}}>
         <div className="section-h">
-          <span>Initiatives by Goal — {displayQuarter}</span>
+          <span>Initiatives by Goal — {CYCLE.current}</span>
           <span className="rule"/>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3, minmax(0, 1fr))",gap:12}}>
@@ -1299,6 +1135,28 @@ function MainView(props){
         </div>
       </section>
 
+      {/* Legend */}
+      <section id="qpe-section-legend" style={{marginBottom:8}}>
+        <div className="section-h">
+          <span>Legend</span>
+          <span className="rule"/>
+        </div>
+        <div className="card" style={{padding:"10px 14px",display:"flex",flexWrap:"wrap",gap:"8px 18px",alignItems:"center",fontSize:11,color:"#666"}}>
+          <span style={{fontSize:9,textTransform:"uppercase",color:"#bbb",fontWeight:700,letterSpacing:.5}}>Status</span>
+          {STATUS_KEYS.map(function(s){
+            var c = STATUS_CFG[s];
+            return <span key={s} style={{display:"inline-flex",alignItems:"center",gap:5}}>
+              <span style={{width:9,height:9,borderRadius:2,background:c.dot,display:"inline-block"}}/>{s}
+            </span>;
+          })}
+          <span style={{width:1,height:14,background:"#ddd"}}/>
+          <span style={{fontSize:9,textTransform:"uppercase",color:"#bbb",fontWeight:700,letterSpacing:.5}}>Badges</span>
+          <NewBadge size={9}/><span>= new proposed initiative this cycle</span>
+          <span style={{width:1,height:14,background:"#ddd"}}/>
+          <span style={{color:"#9A6800",fontWeight:700}}>★ #N</span><span>= CEO-ratified rank from {CYCLE.previous}</span>
+        </div>
+      </section>
+
     </div>
   );
 }
@@ -1307,20 +1165,17 @@ function MainView(props){
 function App(){
   var gf = useState("all"); var goalFocus = gf[0], setGoalFocus = gf[1];
   var fs = useState([]); var fStatus = fs[0], setFStatus = fs[1];
-  var fo = useState([]); var fOwner = fo[0], setFOwner = fo[1];
   var no = useState(false); var newOnly = no[0], setNewOnly = no[1];
   var sr = useState(""); var search = sr[0], setSearch = sr[1];
   var dr = useState(null); var drill = dr[0], setDrillRaw = dr[1];
   var gd = useState(null); var goalDrill = gd[0], setGoalDrillRaw = gd[1];
   var ld = useState(null); var listDrill = ld[0], setListDrillRaw = ld[1];
-  // Track which panel was opened most recently so we can stack z-index correctly
   var lp = useState(null); var lastPanel = lp[0], setLastPanel = lp[1];
 
   function setDrill(v){ setDrillRaw(v); if(v) setLastPanel("drill"); }
   function setGoalDrill(v){ setGoalDrillRaw(v); if(v) setLastPanel("goal"); }
   function setListDrill(v){ setListDrillRaw(v); if(v) setLastPanel("list"); }
 
-  // Presentation mode: ?present=1 hides chrome and bumps font sizes for projection / screenshots
   var presentMode = useMemo(function(){
     try {
       var params = new URLSearchParams(window.location.search || "");
@@ -1352,7 +1207,7 @@ function App(){
         if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Goals sheet returned HTML");
         return normalizeGoalsData(txt);
       })
-      .catch(function(err){ console.warn("Goals load failed:", err.message); return {}; });
+      .catch(function(){ return {}; });
 
     var capPromise = fetch(addCacheBuster(CAPACITY_CSV_URL), {cache:"no-store"})
       .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status+" from capacity sheet"); return r.text(); })
@@ -1360,7 +1215,7 @@ function App(){
         if(txt.toLowerCase().indexOf("<html") > -1) throw new Error("Capacity sheet returned HTML");
         return normalizeCapacityData(txt);
       })
-      .catch(function(err){ console.warn("Capacity load failed (non-blocking):", err.message); return {}; });
+      .catch(function(){ return {}; });
 
     Promise.all([initsPromise, goalsPromise, capPromise])
       .then(function(results){
@@ -1371,7 +1226,6 @@ function App(){
         setLoadedAt(new Date());
       })
       .catch(function(err){
-        console.warn("Live load failed:", err);
         setLoadError(err.message || String(err));
         setInitiatives([]);
         setLoadState("error");
@@ -1394,12 +1248,6 @@ function App(){
     });
   },[initiatives, goalFocus, fStatus, newOnly, search]);
 
-  var allOwners = useMemo(function(){
-    var s = {};
-    initiatives.forEach(function(i){ if(i.objOwner) s[i.objOwner] = true; });
-    return Object.keys(s).sort();
-  },[initiatives]);
-
   var availableStatuses = useMemo(function(){
     return STATUS_KEYS.filter(function(s){
       return initiatives.some(function(i){return i.status === s;});
@@ -1412,40 +1260,42 @@ function App(){
 
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%",fontSize:presentMode?"15.5px":"14px"}}>
-      <div className="hub-top">
-        <div className="hub-header-card">
-          <div className="hub-header-main">
-            <div className="hub-eyebrow">All of Us Planning Hub · Q3 2026 Planning</div>
-            <div className="hub-title">Quarterly Planning Dashboard</div>
-            <div className="hub-subtitle">Executive planning view for cycle movement, ranked priorities, new proposals, goal lanes, capacity signals, and initiative drill-ins.</div>
-          </div>
-          <div className="hub-actions">
-            {!presentMode && <span className="hub-pill"><strong>{filtered.length}</strong> of {initiatives.length} initiatives</span>}
-            {!presentMode && loadState === "loading" && <span className="hub-pill">↻ loading…</span>}
-            {!presentMode && loadState === "live" && <span className="hub-pill good">● live · {loadedAt ? loadedAt.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) : ""}</span>}
-            {!presentMode && loadState === "error" && <span className="hub-pill warn" title={loadError}>● load failed</span>}
-            {!presentMode && <button className="hub-btn primary" onClick={loadLive} disabled={loadState === "loading"}>{loadState === "loading" ? "…" : "↻ Refresh"}</button>}
-            {presentMode && <span className="hub-pill">presentation mode</span>}
-          </div>
+      <div style={{padding:"14px 24px",background:"#fff",borderBottom:"1px solid #ececec",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,gap:12}}>
+        <div style={{minWidth:0}}>
+          <div style={{fontSize:10.5,textTransform:"uppercase",letterSpacing:1.4,color:"#888",fontWeight:600,marginBottom:4}}>NIH · <em>All of Us</em> Research Program · {CYCLE.current} Planning</div>
+          <div style={{fontSize:20,fontWeight:700,color:"#111",lineHeight:1.2,letterSpacing:-0.2}}>Quarterly Planning Dashboard</div>
         </div>
-
-        {!presentMode && (
-          <div className="hub-toolbar">
-            <span className="hub-toolbar-label">Focus</span>
-            <select value={goalFocus} onChange={function(e){setGoalFocus(e.target.value);}} style={{fontSize:11.5,padding:"6px 10px",border:"1px solid "+(goalFocus !== "all" ? "#2471A3" : "#dcdcdc"),borderRadius:18,background:goalFocus !== "all" ? "#EBF5FB" : "#fff",color:goalFocus !== "all" ? "#2471A3" : "#555",fontWeight:goalFocus !== "all" ? 600 : 400}}>
-              <option value="all">All Goals</option>
-              {Object.keys(GOALS).map(function(k){var g = GOALS[k]; return <option key={k} value={k}>Goal {g.num}: {g.name}</option>;})}
-            </select>
-            <MultiSelect label="Status" options={availableStatuses} selected={fStatus} onChange={setFStatus}/>
-            <button onClick={function(){setNewOnly(!newOnly);}} style={{fontSize:11.5,padding:"6px 11px",border:"1px solid "+(newOnly ? "#9A6800" : "#dcdcdc"),borderRadius:18,background:newOnly ? "#FEF5E7" : "#fff",color:newOnly ? "#9A6800" : "#555",cursor:"pointer",fontWeight:newOnly ? 600 : 400}}>📥 New only</button>
-            {anyFilter ? <button onClick={clearAll} style={{fontSize:11.5,background:"none",border:"none",color:"#C0392B",cursor:"pointer",fontWeight:600}}>✕ Clear</button> : null}
-            <div style={{flex:1}}/>
-            <input className="hub-search" value={search} onChange={function(e){setSearch(e.target.value);}} placeholder="🔍 Search…"/>
-          </div>
-        )}
+        <div style={{display:"flex",alignItems:"center",gap:12,flexShrink:0,flexWrap:"wrap"}}>
+          {!presentMode && (
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:11,color:"#999"}}>{filtered.length} of {initiatives.length} initiatives</div>
+              <div style={{fontSize:10,marginTop:2}}>
+                {loadState === "loading" && <span style={{color:"#2471A3"}}>↻ loading…</span>}
+                {loadState === "live" && <span style={{color:"#1E8449"}}>● live · loaded {loadedAt ? loadedAt.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) : ""}</span>}
+                {loadState === "error" && <span style={{color:"#C0392B"}} title={loadError}>● load failed</span>}
+              </div>
+            </div>
+          )}
+          {!presentMode && <button onClick={loadLive} disabled={loadState === "loading"} title="Refresh data" style={{fontSize:11.5,padding:"6px 12px",border:"1px solid #C8DCF0",borderRadius:6,background:"#EBF5FB",color:"#2471A3",cursor:loadState === "loading" ? "wait" : "pointer",fontWeight:500}}>{loadState === "loading" ? "…" : "↻ Refresh"}</button>}
+          {presentMode && <span style={{fontSize:11,color:"#999",fontStyle:"italic"}}>presentation mode</span>}
+        </div>
       </div>
 
-      <div style={{flex:1,overflow:"auto"}}>
+      {!presentMode && (
+        <div style={{padding:"10px 24px",background:"#fafafa",borderBottom:"1px solid #ececec",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",flexShrink:0}}>
+          <span style={{fontSize:10,textTransform:"uppercase",color:"#aaa",fontWeight:700,letterSpacing:.05,marginRight:2}}>Focus</span>
+          <select value={goalFocus} onChange={function(e){setGoalFocus(e.target.value);}} style={{fontSize:11.5,padding:"5px 10px",border:"1px solid "+(goalFocus !== "all" ? "#2471A3" : "#dcdcdc"),borderRadius:18,background:goalFocus !== "all" ? "#EBF5FB" : "#fff",color:goalFocus !== "all" ? "#2471A3" : "#555",fontWeight:goalFocus !== "all" ? 600 : 400}}>
+            <option value="all">All Goals</option>
+            {Object.keys(GOALS).map(function(k){var g = GOALS[k]; return <option key={k} value={k}>Goal {g.num}: {g.name}</option>;})}
+          </select>
+          <MultiSelect label="Status" options={availableStatuses} selected={fStatus} onChange={setFStatus}/>
+          <button onClick={function(){setNewOnly(!newOnly);}} title="Show only initiatives flagged NEW in the planning sheet. Note: this may include items carried over with the NEW flag from a prior cycle — the 'New Proposed' tile uses a stricter definition (NEW + no prior history)." style={{fontSize:11.5,padding:"5px 11px",border:"1px solid "+(newOnly ? "#9A6800" : "#dcdcdc"),borderRadius:18,background:newOnly ? "#FEF5E7" : "#fff",color:newOnly ? "#9A6800" : "#555",cursor:"pointer",fontWeight:newOnly ? 600 : 400}}>📥 New only</button>
+          {anyFilter ? <button onClick={clearAll} style={{fontSize:11.5,background:"none",border:"none",color:"#C0392B",cursor:"pointer",fontWeight:500}}>✕ Clear</button> : null}
+          <div style={{flex:1}}/>
+          <input value={search} onChange={function(e){setSearch(e.target.value);}} placeholder="🔍 Search…" style={{fontSize:12,padding:"5px 11px",border:"1px solid #dcdcdc",borderRadius:18,width:200}}/>
+        </div>
+      )}
+
       <div style={{flex:1,overflow:"auto"}}>
         {loadState === "loading" && (
           <div style={{padding:"60px",textAlign:"center",color:"#999"}}>Loading initiatives from sheet…</div>
