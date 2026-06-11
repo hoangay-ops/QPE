@@ -37,15 +37,15 @@ const CYCLE = {
   previousShort: "Q2 '26",
 };
 
-// ─── Reference Data ──────────────────────────────────────────────────────────
-// Goal names consolidated to match Capacity and Roadmap dashboards
+// Canonical goal definitions — keep in sync across Capacity, QPE, and Roadmap dashboards.
+// `name` is the official long-form label; `short` is the compact UI label.
 const GOALS = {
-  "1":{num:"1",name:"Enrollment & Retention",color:"#2471A3"},
-  "2":{num:"2",name:"Data Available to Researchers",color:"#1E8449"},
-  "3":{num:"3",name:"Partnered Research Studies",color:"#D35400"},
-  "4":{num:"4",name:"Researcher Access & Impact",color:"#B7950B"},
-  "5":{num:"5",name:"Return of Value",color:"#7D3C98"},
-  "6":{num:"6",name:"Management & Operations",color:"#5D6D7E"},
+  "1":{num:"1",name:"Enrollment & Retention",short:"Enrollment & Retention",color:"#2471A3"},
+  "2":{num:"2",name:"Data Available to Researchers",short:"Data to Researchers",color:"#1E8449"},
+  "3":{num:"3",name:"Partnered Research Studies",short:"Partnered Research",color:"#D35400"},
+  "4":{num:"4",name:"Researcher Access & Impact",short:"Researcher Access",color:"#B7950B"},
+  "5":{num:"5",name:"Return of Value",short:"Return of Value",color:"#7D3C98"},
+  "6":{num:"6",name:"Management & Operations",short:"Management & Ops",color:"#5D6D7E"},
 };
 const STATUS_CFG = {
   Committed:  {bg:"#D6EAF8",tx:"#1F618D",dot:"#2471A3"},
@@ -338,8 +338,10 @@ ErrorBoundaryClass.prototype.render = function(){
 
 const {useState,useMemo,useRef,useEffect} = React;
 
-// ─── Small UI helpers ────────────────────────────────────────────────────────
+// Canonical italicized program name — use everywhere "All of Us" appears in UI text.
 function AoU(){ return <em style={{fontStyle:"italic"}}>All of Us</em>; }
+
+// ─── Small UI helpers ────────────────────────────────────────────────────────
 function Chip(props){
   return <span className="chip" style={{background:props.bg,color:props.tx,fontSize:props.size||10}}>{props.children}</span>;
 }
@@ -1073,7 +1075,7 @@ function MainView(props){
               <div key={k} className="card" style={{padding:"12px 14px"}}>
                 <div onClick={function(){onGoalDrill(k);}} style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:8,gap:6,borderBottom:"2px solid "+g.color+"33",paddingBottom:6,cursor:"pointer"}} title="Click to see goal details, objectives, and owners">
                   <div style={{display:"flex",alignItems:"baseline",gap:8,minWidth:0,flex:1}}>
-                    <span style={{fontSize:13,fontWeight:700,color:g.color,whiteSpace:"nowrap"}}>Goal {g.num}: {g.name}</span>
+                    <span style={{fontSize:13,fontWeight:700,color:g.color,whiteSpace:"nowrap"}}>Goal {g.num}: {g.short}</span>
                     {goalOwner && <span style={{fontSize:10.5,color:"#999",fontWeight:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>· {goalOwner}</span>}
                   </div>
                   <span style={{fontSize:10.5,color:"#999",flexShrink:0}}>{lane.length}</span>
@@ -1227,7 +1229,7 @@ function App(){
     <div style={{display:"flex",flexDirection:"column",height:"100%",fontSize:presentMode?"15.5px":"14px"}}>
       <div style={{padding:"14px 24px",background:"#fff",borderBottom:"1px solid #ececec",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,gap:12}}>
         <div style={{minWidth:0}}>
-          <div style={{fontSize:10.5,textTransform:"uppercase",letterSpacing:1.4,color:"#888",fontWeight:600,marginBottom:4}}>NIH · <em>All of Us</em> Research Program · {CYCLE.current} Planning</div>
+          <div style={{fontSize:10.5,textTransform:"uppercase",letterSpacing:1.4,color:"#888",fontWeight:600,marginBottom:4}}>NIH · <AoU/> Research Program · {CYCLE.current} Planning</div>
           <div style={{fontSize:20,fontWeight:700,color:"#111",lineHeight:1.2,letterSpacing:-0.2}}>Quarterly Planning Dashboard</div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:12,flexShrink:0,flexWrap:"wrap"}}>
